@@ -36,13 +36,15 @@ void BitcoinExchange::parseFile()
     std::string line;
     while (std::getline(_file, line))
     {
-        std::istringstream iss(line);
-        std::string date, value;
-        if (!(iss >> date >> value))
-            continue;
-        validateDate(date);
-        validateValue(value);
-        _data[date] = std::stof(value);
+        std::string date;
+        std::string value;
+
+        while (line.find('|') != std::string::npos)
+        {
+            date = line.substr(0, line.find('|'));
+            value = line.substr(line.find('|') + 1);
+            line.erase(0, line.find('|') + 1);
+        }
     }
 }
 
@@ -51,7 +53,7 @@ void BitcoinExchange::validateDate(const std::string &date)
     if (date.size() != 10 || date[4] != '-' || date[7] != '-')
     {
         std::cerr << "Error: bad input => " << date << std::endl;
-        exit(1);
+        return ; 
     }
 }
 
@@ -63,18 +65,18 @@ void BitcoinExchange::validateValue(const std::string &value)
         if (val < 0)
         {
             std::cerr << "Error: not a positive number." << std::endl;
-            exit(1);
+            return ; 
         }
         if (val > 1000)
         {
             std::cerr << "Error: value should be lower than 1000." << std::endl;
-            exit(1);
+            return ;
         }
     }
     catch (const std::invalid_argument &e)
     {
         std::cerr << "Error: not a number." << std::endl;
-        exit(1);
+        return ;
     }
 }
 
