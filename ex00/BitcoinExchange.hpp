@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <map>
-
+#include <cstdlib>
 
 class BitcoinExchange 
 {
@@ -14,13 +14,13 @@ class BitcoinExchange
         std::map<std::string, float> _data;
     public:
         BitcoinExchange(const std::string &filename);
-        ~BitcoinExchange();
         BitcoinExchange(const BitcoinExchange &other);
         BitcoinExchange &operator=(const BitcoinExchange &other);
+        ~BitcoinExchange();
 
         void parseFile();
-        void validateDate(const std::string &date);
-        void validateValue(const std::string &value);
+        int validateDate(const std::string &date);
+        int validateValue(const std::string &value);
 
 };
 
