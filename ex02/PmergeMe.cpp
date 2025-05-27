@@ -59,6 +59,7 @@ void PmergeMe::printVector() const
     }
     std::cout << std::endl;
 }
+
 void PmergeMe::printList() const
 {
     for (std::list<int>::const_iterator it = _list.begin(); it != _list.end(); ++it)

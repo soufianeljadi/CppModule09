@@ -25,6 +25,6 @@ int main(int ac, char **av)
 
     // std::cout << "Time to process a range of "<< list.size() <<" elements with std::list: " << elapsedTimeList << " seconds" << std::endl;
     // std::cout << "Time to process a range of "<< vector.size() <<" elements with std::list: " << elapsedTimeVector << " seconds" << std::endl;
-    
+
     return 0;
 }
