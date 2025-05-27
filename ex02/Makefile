@@ -1,14 +1,14 @@
 CXX = c++
-SRC = main.cpp 
+SRC = main.cpp  PmergeMe.cpp
 OBJ = $(SRC:.cpp=.o)
 RM = rm -rf
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
-NAME = btc
+NAME = PmergeMe
 
 all: $(NAME)
 
-$(NAME): $(OBJ) 
+$(NAME): $(OBJ) PmergeMe.hpp
 	$(CXX) $(CPPFLAGS) $(OBJ) -o $(NAME)
 
 clean:
