@@ -65,7 +65,6 @@ void PmergeMe::printList() const
     {
         int num = *it;
         std::cout << num;
-        ++it;
         if (it != _list.end())
             std::cout << " ";
         else
