@@ -73,9 +73,9 @@
 		{
 			"id": "pointer:pointer",
 			"typeName": "pointer",
-			"x": 2556.066877335619,
-			"y": 671.9886135741306,
-			"lastActivityTimestamp": 1748631804429,
+			"x": 2523.7480234541645,
+			"y": 1049.6764386796249,
+			"lastActivityTimestamp": 1748706732141,
 			"meta": {}
 		},
 		{
@@ -2157,12 +2157,10 @@
 			"typeName": "shape"
 		},
 		{
-			"editingShapeId": "shape:hnIT38tCduUv-2tTDicfz",
+			"editingShapeId": null,
 			"croppingShapeId": null,
-			"selectedShapeIds": [
-				"shape:hnIT38tCduUv-2tTDicfz"
-			],
-			"hoveredShapeId": "shape:hnIT38tCduUv-2tTDicfz",
+			"selectedShapeIds": [],
+			"hoveredShapeId": null,
 			"erasingShapeIds": [],
 			"hintingShapeIds": [],
 			"focusedGroupId": null,
@@ -3314,7 +3312,7 @@
 			"typeName": "shape"
 		},
 		{
-			"x": -294.89042807329764,
+			"x": -422.2650041574529,
 			"y": 331.46268287220636,
 			"z": 0.5326658237611492,
 			"meta": {},
@@ -5354,11 +5352,7 @@
 		{
 			"followingUserId": null,
 			"opacityForNextShape": 1,
-			"stylesForNextShape": {
-				"tldraw:size": "m",
-				"tldraw:textAlign": "start",
-				"tldraw:color": "orange"
-			},
+			"stylesForNextShape": {},
 			"brush": null,
 			"scribbles": [],
 			"cursor": {
@@ -5372,7 +5366,7 @@
 			"screenBounds": {
 				"x": 0,
 				"y": 0,
-				"w": 1406.24462890625,
+				"w": 1526.4134521484375,
 				"h": 1270.5484619140625
 			},
 			"insets": [
@@ -5933,36 +5927,6 @@
 			},
 			"parentId": "page:hycfc2NCxCd0SkvPOvk3x",
 			"index": "aFAW3",
-			"typeName": "shape"
-		},
-		{
-			"x": 2556.066877335619,
-			"y": 671.9886135741306,
-			"rotation": 0,
-			"isLocked": false,
-			"opacity": 1,
-			"meta": {},
-			"id": "shape:hnIT38tCduUv-2tTDicfz",
-			"type": "text",
-			"props": {
-				"color": "orange",
-				"size": "m",
-				"w": 8,
-				"font": "draw",
-				"textAlign": "start",
-				"autoSize": true,
-				"scale": 1,
-				"richText": {
-					"type": "doc",
-					"content": [
-						{
-							"type": "paragraph"
-						}
-					]
-				}
-			},
-			"parentId": "page:hycfc2NCxCd0SkvPOvk3x",
-			"index": "ar0K3",
 			"typeName": "shape"
 		},
 		{
