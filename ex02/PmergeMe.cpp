@@ -25,7 +25,7 @@ double PmergeMe::getCurrentTime()
     struct timeval tv;
 
     if (gettimeofday(&tv, NULL) == -1) { 
-        std::cout << "gettimeofday failed" << std::endl;
+        std::cerr << "gettimeofday failed" << std::endl;
         return 0.0;
     }
     return (tv.tv_sec * 1000000.0 + tv.tv_usec);
@@ -78,17 +78,17 @@ void PmergeMe::parseInput(int argc, char** argv)
             throw std::runtime_error("Invalid number: " + numStr);
         
         std::istringstream iss(numStr);
-        int num;
+        long int num;
+
         iss >> num;
-        
-        if (num < 0)
-            throw std::runtime_error("Negative number: " + numStr);
+        if (num < 0 || num >= 2147483647)
+            throw std::runtime_error("Value out of range: "  + numStr +", try a valid possitive integer ");
         
         vec.push_back(num);
         deq.push_back(num);
     }
 }
-#include <cstdio>
+
 void PmergeMe::generateJacobsthalSequence(int n, std::vector<int>& jacob) 
 {
     if (n >= 0) 
@@ -170,7 +170,7 @@ void PmergeMe::binaryInsertVector(std::vector<int>& mainChain, std::vector<int>&
         
         for (int j = end; j > start; --j) 
         {
-            if (static_cast<size_t>(j - 1) >= pend.size()) 
+            if ((j - 1) >= (int)pend.size()) 
                 continue;
             
             int value = pend[j - 1];
@@ -182,7 +182,7 @@ void PmergeMe::binaryInsertVector(std::vector<int>& mainChain, std::vector<int>&
         }
     }
     
-    if (!pend.empty() && pend.size() > static_cast<size_t>(jacob.back())) 
+    if (!pend.empty() && ((int)pend.size() > jacob.back())) 
     {
         for (size_t j = jacob.back() + 1; j <= pend.size(); ++j) 
         {
@@ -222,9 +222,6 @@ void PmergeMe::fordJohnsonVector(std::vector<int>& arr)
         mainChain.push_back(pairs[i].first);
         pend.push_back(pairs[i].second);
     }
-    
-    if (!pend.empty())
-        mainChain.insert(mainChain.begin(), pend[0]);
     
     if (arr.size() % 2 != 0) 
         pend.push_back(arr.back());
@@ -303,12 +300,12 @@ void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pe
     
     for (size_t i = 1; i < jacob.size(); ++i) 
     {
-        int start = jacob[i-1];
+        int start = jacob[i - 1];
         int end = jacob[i];
         
         for (int j = end; j > start; --j) 
         {
-            if (static_cast<size_t>(j - 1) >= pend.size())
+            if ((j - 1) >= (int)pend.size())
                 continue;
             
             int value = pend[j - 1];
@@ -320,7 +317,7 @@ void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pe
         }
     }
     
-    if (!pend.empty() && pend.size() > static_cast<size_t>(jacob.back())) 
+    if (!pend.empty() && ( (int)pend.size() > jacob.back())) 
     {
         for (size_t j = jacob.back() + 1; j <= pend.size(); ++j) 
         {
