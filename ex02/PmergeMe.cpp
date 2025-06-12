@@ -25,7 +25,7 @@ double PmergeMe::getCurrentTime()
     struct timeval tv;
 
     if (gettimeofday(&tv, NULL) == -1) { 
-        perror("gettimeofday failed");
+        std::cout << "gettimeofday failed" << std::endl;
         return 0.0;
     }
     return (tv.tv_sec * 1000000.0 + tv.tv_usec);
@@ -104,24 +104,58 @@ void PmergeMe::generateJacobsthalSequence(int n, std::vector<int>& jacob)
     }
 }
 
-void PmergeMe::mergePairsVector(std::vector<std::pair<int, int> >& pairs, std::vector<int>& mainChain, std::vector<int>& pend) 
+void PmergeMe::mergeVector(std::vector<std::pair<int, int> >& pairs, int left, int mid, int right) 
 {
-    for (size_t i = 0; i < pairs.size(); ++i) 
-    {
-        if (pairs[i].first < pairs[i].second) 
-        {
-            mainChain.push_back(pairs[i].second);
-            pend.push_back(pairs[i].first);
-        }
-        else
-        {
-            mainChain.push_back(pairs[i].first);
-            pend.push_back(pairs[i].second);
-        }
-    }
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::vector<std::pair<int, int> > L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = pairs[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = pairs[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
     
-    if (!pend.empty())
-        mainChain.insert(mainChain.begin(), pend[0]);
+    while (i < n1 && j < n2) 
+    {
+        if (L[i].first <= R[j].first) 
+        {
+            pairs[k] = L[i];
+            i++;
+        } 
+        else {
+            pairs[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) 
+    {
+        pairs[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) 
+    {
+        pairs[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void PmergeMe::recursiveMergeSortVector(std::vector<std::pair<int, int> >& pairs, int left, int right) 
+{
+    if (left < right) 
+    {
+        int mid = left + (right - left) / 2;
+        recursiveMergeSortVector(pairs, left, mid);
+        recursiveMergeSortVector(pairs, mid + 1, right);
+        mergeVector(pairs, left, mid, right);
+    }
 }
 
 void PmergeMe::binaryInsertVector(std::vector<int>& mainChain, std::vector<int>& pend) 
@@ -178,18 +212,19 @@ void PmergeMe::fordJohnsonVector(std::vector<int>& arr)
             std::swap(pairs[i].first, pairs[i].second);
     }
     
-    for (size_t i = 0; i < pairs.size(); ++i) 
-    {
-        for (size_t j = i + 1; j < pairs.size(); ++j) 
-        {
-            if (pairs[i].first > pairs[j].first) 
-                std::swap(pairs[i], pairs[j]);
-        }
-    }
+    
+    recursiveMergeSortVector(pairs, 0, pairs.size() - 1);
     
     std::vector<int> mainChain;
     std::vector<int> pend;
-    mergePairsVector(pairs, mainChain, pend);
+    for (size_t i = 0; i < pairs.size(); ++i) 
+    {
+        mainChain.push_back(pairs[i].first);
+        pend.push_back(pairs[i].second);
+    }
+    
+    if (!pend.empty())
+        mainChain.insert(mainChain.begin(), pend[0]);
     
     if (arr.size() % 2 != 0) 
         pend.push_back(arr.back());
@@ -206,23 +241,59 @@ void PmergeMe::sortVector()
     fordJohnsonVector(vec);
 }
 
-void PmergeMe::mergePairsDeque(std::deque<std::pair<int, int> >& pairs, std::deque<int>& mainChain, std::deque<int>& pend) 
+void PmergeMe::mergeDeque(std::deque<std::pair<int, int> >& pairs, int left, int mid, int right) 
 {
-    for (size_t i = 0; i < pairs.size(); ++i) 
-    {
-        if (pairs[i].first < pairs[i].second) 
-        {
-            mainChain.push_back(pairs[i].second);
-            pend.push_back(pairs[i].first);
-        } else 
-        {
-            mainChain.push_back(pairs[i].first);
-            pend.push_back(pairs[i].second);
-        }
-    }
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::deque<std::pair<int, int> > L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = pairs[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = pairs[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
     
-    if (!pend.empty())
-        mainChain.push_front(pend[0]);
+    while (i < n1 && j < n2) 
+    {
+        if (L[i].first <= R[j].first) 
+        {
+            pairs[k] = L[i];
+            i++;
+        } 
+        else 
+        {
+            pairs[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) 
+    {
+        pairs[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) 
+    {
+        pairs[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void PmergeMe::recursiveMergeSortDeque(std::deque<std::pair<int, int> >& pairs, int left, int right) 
+{
+    if (left < right) 
+    {
+        int mid = left + (right - left) / 2;
+        recursiveMergeSortDeque(pairs, left, mid);
+        recursiveMergeSortDeque(pairs, mid + 1, right);
+        mergeDeque(pairs, left, mid, right);
+    }
 }
 
 void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pend) 
@@ -242,7 +313,7 @@ void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pe
             
             int value = pend[j - 1];
 
-            std::vector<int>::iterator pos = std::lower_bound(mainChain.begin()
+            std::deque<int>::iterator pos = std::lower_bound(mainChain.begin()
                                         ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
                                         ,value);
             mainChain.insert(pos, value);
@@ -255,7 +326,7 @@ void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pe
         {
             int value = pend[j - 1];
 
-            std::vector<int>::iterator pos = std::lower_bound(mainChain.begin()
+            std::deque<int>::iterator pos = std::lower_bound(mainChain.begin()
                                         ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
                                         ,value);
             mainChain.insert(pos, value);
@@ -282,20 +353,19 @@ void PmergeMe::fordJohnsonDeque(std::deque<int>& arr)
         }
     }
     
-    for (size_t i = 0; i < pairs.size(); ++i)
-     {
-        for (size_t j = i + 1; j < pairs.size(); ++j) 
-        {
-            if (pairs[i].first > pairs[j].first) 
-            {
-                std::swap(pairs[i], pairs[j]);
-            }
-        }
-    }
+    recursiveMergeSortDeque(pairs, 0, pairs.size() - 1);
     
     std::deque<int> mainChain;
     std::deque<int> pend;
-    mergePairsDeque(pairs, mainChain, pend);
+    
+    for (size_t i = 0; i < pairs.size(); ++i) 
+    {
+        mainChain.push_back(pairs[i].first);
+        pend.push_back(pairs[i].second);
+    }
+    
+    if (!pend.empty())
+        mainChain.push_front(pend[0]);
     
     if (arr.size() % 2 != 0)
         pend.push_back(arr.back());

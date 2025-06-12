@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <cstdlib>
+#include <iterator>
 #include <cctype>
 // #include <utility>
 
@@ -22,16 +23,18 @@ class PmergeMe
         
         void sortVector();
         void fordJohnsonVector(std::vector<int>& arr);
-        void mergePairsVector(std::vector<std::pair<int, int> >& pairs, std::vector<int>& mainChain, std::vector<int>& pend);
+        void recursiveMergeSortVector(std::vector<std::pair<int, int> >& pairs, int left, int right);
+        void mergeVector(std::vector<std::pair<int, int> >& pairs, int left, int mid, int right);
         void binaryInsertVector(std::vector<int>& mainChain, std::vector<int>& pend);
-        
-        void sortDeque();
-        void fordJohnsonDeque(std::deque<int>& arr);
-        void mergePairsDeque(std::deque<std::pair<int, int> >& pairs, std::deque<int>& mainChain, std::deque<int>& pend);
-        void binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pend);
         
         void generateJacobsthalSequence(int n, std::vector<int>& jacob);
 
+        void sortDeque();
+        void fordJohnsonDeque(std::deque<int>& arr);
+        void recursiveMergeSortDeque(std::deque<std::pair<int, int> >& pairs, int left, int right);
+        void mergeDeque(std::deque<std::pair<int, int> >& pairs, int left, int mid, int right);
+        void binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pend);
+        
         int isNumber(const std::string& str);
         void printContainer(const std::vector<int>& container);
         void printContainer(const std::deque<int>& container);
