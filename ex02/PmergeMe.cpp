@@ -1,5 +1,6 @@
 #include "PmergeMe.hpp"
 
+///////////////////////////////////////////////////////////////CANONICAL
 
 PmergeMe::PmergeMe() {}
 
@@ -19,6 +20,8 @@ PmergeMe& PmergeMe::operator=(const PmergeMe& other)
     }
     return *this;
 }
+
+///////////////////////////////////////////////////////////////UTILS
 
 double PmergeMe::getCurrentTime() 
 {
@@ -89,18 +92,62 @@ void PmergeMe::parseInput(int argc, char** argv)
     }
 }
 
-void PmergeMe::generateJacobsthalSequence(int n, std::vector<int>& jacob) 
+void PmergeMe::sortAndDisplay() 
 {
-    if (n >= 0) 
+    std::vector<int> vecCopy = vec;
+    std::deque<int> deqCopy = deq;
+    
+    std::cout << "Before: ";
+    printContainer(vec);
+    
+    double startVec = getCurrentTime();
+    fordJohnsonVector(vecCopy);
+    double endVec = getCurrentTime();
+    double vectorTime = endVec - startVec;
+    
+    double startDeq = getCurrentTime();
+    fordJohnsonDeque(deqCopy);
+    double endDeq = getCurrentTime();
+    double dequeTime = endDeq - startDeq;
+    
+    vec = vecCopy;
+    deq = deqCopy;
+    
+    std::cout << "After: ";
+    printContainer(vec);
+    
+    std::cout.precision(5);
+    std::cout << std::fixed;
+    std::cout << "Time to process a range of " << vec.size() 
+              << " elements with std::vector: " << vectorTime << " us" << std::endl;
+    std::cout << "Time to process a range of " << deq.size() 
+              << " elements with std::deque: " << dequeTime << " us" << std::endl;
+}
+
+///////////////////////////////////////////////////////////////VECTOR
+
+void PmergeMe::generateJacobsthalInsertionOrderV(int n, std::vector<int>& jacob) 
+{
+    if (n >= 0)
         jacob.push_back(0);
-    if (n >= 1) 
+    if (n >= 1)
         jacob.push_back(1);
-    for (int i = 2; ; i++) 
+
+    int a = 1, b = 1;
+    while (771) 
     {
-        int next = jacob[i-1] + 2 * jacob[i-2];         // J(i) = J(i-1) + 2*J(i-2)
-        if (next > n) 
+        int next = a + 2 * b;
+        if (next > n)
             break;
+
+        for (int j = next - 1; j > a; --j) 
+        {
+            if (j <= n)
+                jacob.push_back(j);
+        }
         jacob.push_back(next);
+        a = b;
+        b = next;
     }
 }
 
@@ -160,37 +207,22 @@ void PmergeMe::recursiveMergeSortVector(std::vector<std::pair<int, int> >& pairs
 
 void PmergeMe::binaryInsertVector(std::vector<int>& mainChain, std::vector<int>& pend) 
 {
-    std::vector<int> jacob;
-    generateJacobsthalSequence(pend.size(), jacob);
+    std::vector<int> insertionOrder;
+    generateJacobsthalInsertionOrderV(pend.size(), insertionOrder);
     
-    for (size_t i = 1; i < jacob.size(); ++i) 
+    for (size_t i = 0; i < insertionOrder.size(); ++i) 
     {
-        int start = jacob[i-1];
-        int end = jacob[i];
+        int index = insertionOrder[i];
         
-        for (int j = end; j > start; --j) 
+        if (index >= 0 && index < (int)pend.size()) 
         {
-            if ((j - 1) >= (int)pend.size()) 
-                continue;
+            int value = pend[index];
             
-            int value = pend[j - 1];
-
-            std::vector<int>::iterator pos = std::lower_bound(mainChain.begin()
-                                        ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
-                                        ,value);
-            mainChain.insert(pos, value);
-        }
-    }
-    
-    if (!pend.empty() && ((int)pend.size() > jacob.back())) 
-    {
-        for (size_t j = jacob.back() + 1; j <= pend.size(); ++j) 
-        {
-            int value = pend[j - 1];
-
-            std::vector<int>::iterator pos = std::lower_bound(mainChain.begin()
-                                        ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
-                                        ,value);
+            std::vector<int>::iterator pos = std::lower_bound(
+                mainChain.begin(), 
+                mainChain.end(), 
+                value);
+                
             mainChain.insert(pos, value);
         }
     }
@@ -236,6 +268,33 @@ void PmergeMe::sortVector()
     if (vec.empty())
         return;
     fordJohnsonVector(vec);
+}
+
+///////////////////////////////////////////////////////////////DEQUE
+
+void PmergeMe::generateJacobsthalInsertionOrderD(int n, std::deque<int>& jacob) 
+{
+    if (n >= 0)
+        jacob.push_back(0);
+    if (n >= 1)
+        jacob.push_back(1);
+
+    int a = 1, b = 1;
+    while (771) 
+    {
+        int next = a + 2 * b;
+        if (next > n)
+            break;
+
+        for (int j = next - 1; j > a; --j) 
+        {
+            if (j <= n)
+                jacob.push_back(j);
+        }
+        jacob.push_back(next);
+        a = b;
+        b = next;
+    }
 }
 
 void PmergeMe::mergeDeque(std::deque<std::pair<int, int> >& pairs, int left, int mid, int right) 
@@ -295,37 +354,22 @@ void PmergeMe::recursiveMergeSortDeque(std::deque<std::pair<int, int> >& pairs, 
 
 void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pend) 
 {
-    std::vector<int> jacob;
-    generateJacobsthalSequence(pend.size(), jacob);
+    std::deque<int> insertionOrder;
+    generateJacobsthalInsertionOrderD(pend.size(), insertionOrder);
     
-    for (size_t i = 1; i < jacob.size(); ++i) 
+    for (size_t i = 0; i < insertionOrder.size(); ++i) 
     {
-        int start = jacob[i - 1];
-        int end = jacob[i];
+        int index = insertionOrder[i];
         
-        for (int j = end; j > start; --j) 
+        if (index >= 0 && index < (int)pend.size()) 
         {
-            if ((j - 1) >= (int)pend.size())
-                continue;
+            int value = pend[index];
             
-            int value = pend[j - 1];
-
-            std::deque<int>::iterator pos = std::lower_bound(mainChain.begin()
-                                        ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
-                                        ,value);
-            mainChain.insert(pos, value);
-        }
-    }
-    
-    if (!pend.empty() && ( (int)pend.size() > jacob.back())) 
-    {
-        for (size_t j = jacob.back() + 1; j <= pend.size(); ++j) 
-        {
-            int value = pend[j - 1];
-
-            std::deque<int>::iterator pos = std::lower_bound(mainChain.begin()
-                                        ,std::lower_bound(mainChain.begin(),mainChain.end(), value)
-                                        ,value);
+            std::deque<int>::iterator pos = std::lower_bound(
+                mainChain.begin(), 
+                mainChain.end(), 
+                value);
+                
             mainChain.insert(pos, value);
         }
     }
@@ -361,9 +405,6 @@ void PmergeMe::fordJohnsonDeque(std::deque<int>& arr)
         pend.push_back(pairs[i].second);
     }
     
-    if (!pend.empty())
-        mainChain.push_front(pend[0]);
-    
     if (arr.size() % 2 != 0)
         pend.push_back(arr.back());
     
@@ -378,34 +419,3 @@ void PmergeMe::sortDeque()
     fordJohnsonDeque(deq);
 }
 
-void PmergeMe::sortAndDisplay() 
-{
-    std::vector<int> vecCopy = vec;
-    std::deque<int> deqCopy = deq;
-    
-    std::cout << "Before: ";
-    printContainer(vec);
-    
-    double startVec = getCurrentTime();
-    fordJohnsonVector(vecCopy);
-    double endVec = getCurrentTime();
-    double vectorTime = endVec - startVec;
-    
-    double startDeq = getCurrentTime();
-    fordJohnsonDeque(deqCopy);
-    double endDeq = getCurrentTime();
-    double dequeTime = endDeq - startDeq;
-    
-    vec = vecCopy;
-    deq = deqCopy;
-    
-    std::cout << "After: ";
-    printContainer(vec);
-    
-    std::cout.precision(5);
-    std::cout << std::fixed;
-    std::cout << "Time to process a range of " << vec.size() 
-              << " elements with std::vector: " << vectorTime << " us" << std::endl;
-    std::cout << "Time to process a range of " << deq.size() 
-              << " elements with std::deque: " << dequeTime << " us" << std::endl;
-}
