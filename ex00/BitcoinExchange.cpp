@@ -82,13 +82,9 @@ void BitcoinExchange::parseFile()
             continue;
         }
         if (it == _data.end())
-        {
             --it;
-        }
         else if (it != _data.begin())
-        {
             --it;
-        }
         std::cout << date << " => " << value << " = " << it->second * num << std::endl;
     }
 }
@@ -97,7 +93,6 @@ int BitcoinExchange::validateDate(const std::string &date)
 {
     if (date.size() != 10 || date[4] != '-' || date[7] != '-')
     {
-
         std::cerr << "Error: bad input => " << date << std::endl;
         return 1; 
     }

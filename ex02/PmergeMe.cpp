@@ -172,7 +172,8 @@ void PmergeMe::mergeVector(std::vector<std::pair<int, int> >& pairs, int left, i
             pairs[k] = L[i];
             i++;
         } 
-        else {
+        else 
+        {
             pairs[k] = R[j];
             j++;
         }

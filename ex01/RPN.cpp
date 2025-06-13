@@ -21,9 +21,7 @@ RPN &RPN::operator=(const RPN &other)
 void RPN::parseFile()
 {
     if (calculate() == -1)
-    {
         std::cerr << "Error: Invalid expression." << std::endl;
-    }
 }
 
 int RPN::calculate()
