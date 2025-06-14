@@ -27,7 +27,8 @@ double PmergeMe::getCurrentTime()
 {
     struct timeval tv;
 
-    if (gettimeofday(&tv, NULL) == -1) { 
+    if (gettimeofday(&tv, NULL) == -1) 
+    { 
         std::cerr << "gettimeofday failed" << std::endl;
         return 0.0;
     }
@@ -390,9 +391,7 @@ void PmergeMe::fordJohnsonDeque(std::deque<int>& arr)
     for (size_t i = 0; i < pairs.size(); ++i) 
     {
         if (pairs[i].first < pairs[i].second) 
-        {
             std::swap(pairs[i].first, pairs[i].second);
-        }
     }
     
     recursiveMergeSortDeque(pairs, 0, pairs.size() - 1);

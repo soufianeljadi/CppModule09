@@ -47,8 +47,6 @@ int RPN::calculate()
     }
     if (stack.size() != 1)
         return -1; 
-    if (stack.top() < 0)
-        return -1; 
     std::cout << stack.top() << std::endl;
     return 0;
 }

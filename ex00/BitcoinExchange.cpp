@@ -35,6 +35,11 @@ void BitcoinExchange::parseFile()
     }
     std::string line;
     std::getline(dataFile, line);
+    if (line.empty())
+    {
+        std::cerr << "Error: Data file is empty." << std::endl;
+        return ;
+    }
     while(std::getline(dataFile, line))
     {
         std::string date = line.substr(0, 10);
