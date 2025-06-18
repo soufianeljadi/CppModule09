@@ -96,7 +96,9 @@ void BitcoinExchange::parseFile()
 
 int BitcoinExchange::validateDate(const std::string &date)
 {
-    if (date.size() != 10 || date[4] != '-' || date[7] != '-')
+    if (date.size() != 10 || date[4] != '-' || date[7] != '-' || !isdigit(date[0])
+        || !isdigit(date[1]) || !isdigit(date[2]) || !isdigit(date[3]) || !isdigit(date[5])
+         || !isdigit(date[6]) || !isdigit(date[8]) || !isdigit(date[9]) )
     {
         std::cerr << "Error: bad input => " << date << std::endl;
         return 1; 
@@ -107,12 +109,12 @@ int BitcoinExchange::validateDate(const std::string &date)
 
     char* endptr;
     int year = std::strtol(yearStr.c_str(), &endptr, 10);
-    if (*endptr != '\0' || year < 2009 || year > 2023)
+    if (*endptr != '\0' || year < 0)
     {
         std::cerr << "Error: bad input => " << date << std::endl;
         return 1; 
     }
-    
+    (void)year;
     int month = std::strtol(monthStr.c_str(), &endptr, 10);
     if (*endptr != '\0' || month < 1 || month > 12)
     {
@@ -144,8 +146,8 @@ int BitcoinExchange::validateValue(const std::string &value)
     {
         if(value[i] == '.')
             c += 1;
-        if ((isdigit(value[i]) == 0 && value[i] != '.' && value[i] != '+' && value[i] != '-') 
-            || c > 1 || value[0] == '.')
+        if ((isdigit(value[i]) == 0 && value[i] != '.') 
+            || c > 1 || value[0] == '.' || value[value.size() - 1] == '.')
         {
             std::cerr << "Error: bad input => " << value << std::endl;
             return 1; 

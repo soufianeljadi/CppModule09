@@ -1,9 +1,8 @@
-#ifndef RNP_HPP
-#define RNP_HPP
+#ifndef RPN_HPP
+#define RPN_HPP
 
 #include <iostream>
 #include <stack>
-#include <string>
 
 class RPN
 {

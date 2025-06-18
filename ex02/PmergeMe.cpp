@@ -40,12 +40,6 @@ int  PmergeMe::isNumber(const std::string& str)
     if (str.empty())
          return 0;
     std::string::const_iterator it = str.begin();
-    if (*it == '-') 
-    {
-        if (str.length() == 1)
-            return 0;
-        ++it;
-    }
     while (it != str.end()) 
     {
         if (!std::isdigit(*it))
@@ -100,9 +94,9 @@ void PmergeMe::sortAndDisplay()
     
     std::cout << "Before: ";
     printContainer(vec);
-    
     double startVec = getCurrentTime();
     fordJohnsonVector(vecCopy);
+
     double endVec = getCurrentTime();
     double vectorTime = endVec - startVec;
     
@@ -110,16 +104,13 @@ void PmergeMe::sortAndDisplay()
     fordJohnsonDeque(deqCopy);
     double endDeq = getCurrentTime();
     double dequeTime = endDeq - startDeq;
-    
-    vec = vecCopy;
-    deq = deqCopy;
-    
-    std::cout << "After: ";
-    printContainer(vec);
+
+    std::cout << "\nAfter: ";
+    printContainer(vecCopy);
     
     std::cout.precision(5);
     std::cout << std::fixed;
-    std::cout << "Time to process a range of " << vec.size() 
+    std::cout << "\nTime to process a range of " << vec.size() 
               << " elements with std::vector: " << vectorTime << " us" << std::endl;
     std::cout << "Time to process a range of " << deq.size() 
               << " elements with std::deque: " << dequeTime << " us" << std::endl;
@@ -228,6 +219,16 @@ void PmergeMe::binaryInsertVector(std::vector<int>& mainChain, std::vector<int>&
             mainChain.insert(pos, value);
         }
     }
+    for (size_t j = insertionOrder.size(); j < pend.size(); ++j) 
+    {
+        int value = pend[j];
+        std::vector<int>::iterator pos = std::lower_bound(
+            mainChain.begin(), 
+            mainChain.end(), 
+            value);
+        mainChain.insert(pos, value);
+    }
+
 }
 
 void PmergeMe::fordJohnsonVector(std::vector<int>& arr) 
@@ -239,13 +240,12 @@ void PmergeMe::fordJohnsonVector(std::vector<int>& arr)
     {
         pairs.push_back(std::make_pair(arr[i], arr[i+1]));
     }
-    //large -> first
+
     for (size_t i = 0; i < pairs.size(); ++i) 
     {
         if (pairs[i].first < pairs[i].second)
             std::swap(pairs[i].first, pairs[i].second);
     }
-    
     
     recursiveMergeSortVector(pairs, 0, pairs.size() - 1);
     
@@ -265,12 +265,7 @@ void PmergeMe::fordJohnsonVector(std::vector<int>& arr)
     arr = mainChain;
 }
 
-void PmergeMe::sortVector() 
-{
-    if (vec.empty())
-        return;
-    fordJohnsonVector(vec);
-}
+
 
 ///////////////////////////////////////////////////////////////DEQUE
 
@@ -375,6 +370,15 @@ void PmergeMe::binaryInsertDeque(std::deque<int>& mainChain, std::deque<int>& pe
             mainChain.insert(pos, value);
         }
     }
+    for (size_t j = insertionOrder.size(); j < pend.size(); ++j) 
+    {
+        int value = pend[j];
+        std::deque<int>::iterator pos = std::lower_bound(
+            mainChain.begin(), 
+            mainChain.end(), 
+            value);
+        mainChain.insert(pos, value);
+    }
 }
 
 void PmergeMe::fordJohnsonDeque(std::deque<int>& arr) 
@@ -410,12 +414,5 @@ void PmergeMe::fordJohnsonDeque(std::deque<int>& arr)
     
     binaryInsertDeque(mainChain, pend);
     arr = mainChain;
-}
-
-void PmergeMe::sortDeque() 
-{
-    if (deq.empty()) 
-        return;
-    fordJohnsonDeque(deq);
 }
 
